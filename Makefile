@@ -2,8 +2,6 @@ GOBIN := $(shell pwd)/bin
 VERSION ?= $(shell git rev-parse --abbrev-ref HEAD)
 COMMIT ?= $(shell git describe --match=NeVeRmAtCh --always --abbrev=40 --dirty)
 BUILDFLAGS ?= -gcflags '$(GCFLAGS)' -ldflags '$(LDFLAGS) -X main.Version=$(VERSION) -X main.Commit=$(COMMIT)' -tags '$(BUILD_TAGS)'
-IMAGE_REPO ?= xhebox
-IMAGE_TAG ?= latest
 
 .PHONY: cmd_%
 
@@ -15,5 +13,4 @@ cmd_%:
 	go build $(BUILDFLAGS) -o $(OUTPUT) $(SOURCE)
 
 docker-release:
-	buildah build --platform linux/arm64,linux/amd64 -t "$(IMAGE_REPO)/csi-rclone:$(IMAGE_TAG)" --build-arg "GOPROXY=$(shell go env GOPROXY)" --build-arg "VERSION=$(VERSION)" --build-arg "COMMIT=$(COMMIT)" -f docker/Dockerfile .
-	podman push "$(IMAGE_REPO)/csi-rclone:$(IMAGE_TAG)" docker://$(IMAGE_REPO)/csi-rclone:$(IMAGE_TAG)
+	docker buildx build . --platform linux/arm64,linux/amd64 -f docker/Dockerfile -t ghcr.io/lostb1t/csi-driver-rclone --push

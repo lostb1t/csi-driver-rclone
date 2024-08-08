@@ -25,10 +25,8 @@ SOFTWARE.
 package driver
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-  "github.com/davecgh/go-spew/spew"
 	"strings"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
