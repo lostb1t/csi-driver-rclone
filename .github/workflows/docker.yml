@@ -3,10 +3,8 @@ name: docker
 on:
   workflow_dispatch:
   
-permissions:
-  contents: write
-  pull-requests: write
-  packages: write
+env:
+  REGISTRY_IMAGE: ghcr.io/lostb1t/replex
 
 jobs:
   docker:
