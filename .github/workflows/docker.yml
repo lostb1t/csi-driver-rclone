@@ -3,8 +3,8 @@ name: docker
 on:
   workflow_dispatch:
   
-env:
-  REGISTRY_IMAGE: ghcr.io/lostb1t/csi-driver-rclone
+#env:
+#  REGISTRY_IMAGE: ghcr.io/lostb1t/csi-driver-rclone
 
 jobs:
   docker:
@@ -34,4 +34,4 @@ jobs:
           context: .
           file: docker/Dockerfile
           platforms: linux/amd64,linux/arm64
-          #tags: lostb1t/csi-driver-rclone:latest
+          tags: ghcr.io/lostb1t/csi-driver-rclone
