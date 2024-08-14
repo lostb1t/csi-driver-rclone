@@ -49,6 +49,7 @@ func (d *driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 }
 
 func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
+ glog.Infof("NodePublishVolume: called with args %+v", *req)
 	var err error
 	rpath := "/"
 	vfsOpt := make(map[string]any)
