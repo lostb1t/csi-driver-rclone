@@ -109,6 +109,8 @@ func (d *driver) rc(method string, data map[string]any) (gjson.Result, error) {
 	if err != nil {
 		return res, err
 	}
+
+	glog.Infof("executing rc command: %s data: %s", method, b)
 	resp, err := http.DefaultClient.Post(fmt.Sprintf("http://localhost:5572/%s", method), "application/json", bytes.NewReader(b))
 	if err != nil {
 		return res, err
