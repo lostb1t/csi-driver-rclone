@@ -27,6 +27,7 @@ package driver
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
@@ -49,15 +50,13 @@ func (d *driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 }
 
 func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
-    glog.Infof("NodePublishVolume: called with args %+v", *req)
+    glog.V(5).Infof("NodePublishVolume: called with args %+v", *req)
 	var err error
 	rpath := "/"
 	vfsOpt := make(map[string]any)
 	mountOpt := make(map[string]any)
 
-	test := req.VolumeCapability.GetMount();
-	glog.V(5).Infof("nount: %+v", test);
-	var b []byte
+	//var b []byte
 
 	if v, ok := req.VolumeContext["path"]; ok {
 		rpath = v
@@ -75,16 +74,50 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 			goto clean
 		}
 	}
-	glog.Infof("yes");
+	glog.V(5).Infof("yes");
 	if v, ok := req.VolumeCapability.GetAccessType().(*csi.VolumeCapability_Mount); ok {
-		glog.Infof("YO: %+v", v);
-		if err = v.Mount.XXX_Unmarshal(b); err != nil {
-			glog.Infof("ERROR");
-			goto clean
+		glog.V(5).Infof("YO: %+v", v.Mount.GetMountFlags());
+		flags :=  v.Mount.GetMountFlags();
+		
+		s := strings.Split(flags[0], "--");
+		for _, f := range s {
+			k := strings.Split(f, " ");
+			b := strings.Split(k[0], "-");
+			name := ""
+			for _, x := range b {
+				name += strings.Title(x)
+			}
+
+			if len(k) == 1 {
+				mountOpt[name] = true
+			} else {
+				mountOpt[name] = f[1]
+			}
+			//--allow-non-empty --allow-other --vfs-cache-mode full --dir-cache-time 10s
 		}
+		// for i, f := range flags {
+		// 	//s := strings.Split(f, ":");
+		// 	// if len(s) == 1 {
+		// 	// 	continue
+		// 	// }
+		// 	mountOpt[f] = 
+		// 	// f.
+		// 	// if !hasMountOption(mountOptions, f) {
+		// 	// 	mountOptions = append(mountOptions, f)
+		// 	// }
+		// }
+		//v.Mount.GetMountFlags()
+		
+    //glog.Infof("Uhu: %+v", v.Mount["mount_flags"]);
+		// if err = v.Mount.XXX_Unmarshal(b); err != nil {
+		// if err = json.Unmarshal([v.Mount.MountFlags, &mountOpt); err != nil {
+		// 	glog.Infof("ERROR");
+		// 	goto clean
+		// }
 	}
 
-	glog.Infof("YO: %+v", b);
+	//glog.V(5).Infof("YO: %+v", b);
+	glog.V(5).Infof("YO: %+v", mountOpt);
 
 	// if v, ok := req.VolumeContext["mount"]; ok {
 	// 	if err = json.Unmarshal([]byte(v), &mountOpt); err != nil {
