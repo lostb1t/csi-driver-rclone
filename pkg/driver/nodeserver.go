@@ -75,7 +75,7 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 			goto clean
 		}
 	}
-	glog..Infof("yes");
+	glog.Infof("yes");
 	if v, ok := req.VolumeCapability.GetAccessType().(*csi.VolumeCapability_Mount); ok {
 		if err = v.Mount.XXX_Unmarshal(b); err != nil {
 			glog.Infof("ERROR");
