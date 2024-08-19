@@ -54,6 +54,11 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	rpath := "/"
 	vfsOpt := make(map[string]any)
 	mountOpt := make(map[string]any)
+
+	test := req.VolumeCapability.GetMount();
+	glog.V(5).Infof("nount: %+v", test);
+	var b []byte
+
 	if v, ok := req.VolumeContext["path"]; ok {
 		rpath = v
 	}
@@ -71,13 +76,22 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		}
 	}
 
+	
+	if v, ok := req.VolumeCapability.GetAccessType().(*csi.VolumeCapability_Mount); ok {
+		if err = v.Mount.XXX_Unmarshal(b); err != nil {
+			goto clean
+		}
+	}
+
+	glog.V(5).Infof("noun optionst: %+v", mountOpt);
+
 	// if v, ok := req.VolumeContext["mount"]; ok {
 	// 	if err = json.Unmarshal([]byte(v), &mountOpt); err != nil {
 	// 		goto clean
 	// 	}
 	// }
-	test := req.VolumeCapability.GetMount();
-	glog.V(5).Infof("nount: %+v", test);
+	// test := req.VolumeCapability.GetMount();
+	// glog.V(5).Infof("nount: %+v", test);
 	// if err = json.Unmarshal([]byte(req.VolumeCapability.GetMount()), &mountOpt); err != nil {
 	// 	goto clean
 	// }
