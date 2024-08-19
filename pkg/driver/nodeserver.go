@@ -71,6 +71,18 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		}
 	}
 
+	// if v, ok := req.VolumeContext["mount"]; ok {
+	// 	if err = json.Unmarshal([]byte(v), &mountOpt); err != nil {
+	// 		goto clean
+	// 	}
+	// }
+	test := req.VolumeCapability.GetMount();
+	glog.V(5).Infof("nount: %+v", test);
+	// if err = json.Unmarshal([]byte(req.VolumeCapability.GetMount()), &mountOpt); err != nil {
+	// 	goto clean
+	// }
+
+
 	if _, err = d.remoteCreate(req.VolumeId, req.VolumeContext); err != nil {
 		goto clean
 	}
