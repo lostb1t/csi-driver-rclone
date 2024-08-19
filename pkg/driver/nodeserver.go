@@ -50,7 +50,7 @@ func (d *driver) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstageVolu
 }
 
 func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
-    glog.V(5).Infof("NodePublishVolume: called with args %+v", *req)
+	glog.V(5).Infof("NodePublishVolume: called with args %+v", *req)
 	var err error
 	rpath := "/"
 	vfsOpt := make(map[string]any)
@@ -74,15 +74,16 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 			goto clean
 		}
 	}
-	glog.V(5).Infof("yes");
+	glog.V(5).Infof("yes")
 	if v, ok := req.VolumeCapability.GetAccessType().(*csi.VolumeCapability_Mount); ok {
-		glog.V(5).Infof("YO: %+v", v.Mount.GetMountFlags());
-		flags :=  v.Mount.GetMountFlags();
-		
-		s := strings.Split(flags[0], "--");
+		glog.V(5).Infof("YO: %+v", v.Mount.GetMountFlags())
+		flags := v.Mount.GetMountFlags()
+
+		s := strings.Split(flags[0], "--")
 		for _, f := range s {
-			k := strings.Split(f, " ");
-			b := strings.Split(k[0], "-");
+			f = strings.Trim(f, " ") 
+			k := strings.Split(f, " ")
+			b := strings.Split(k[0], "-")
 			name := ""
 			for _, x := range b {
 				name += strings.Title(x)
@@ -100,15 +101,15 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		// 	// if len(s) == 1 {
 		// 	// 	continue
 		// 	// }
-		// 	mountOpt[f] = 
+		// 	mountOpt[f] =
 		// 	// f.
 		// 	// if !hasMountOption(mountOptions, f) {
 		// 	// 	mountOptions = append(mountOptions, f)
 		// 	// }
 		// }
 		//v.Mount.GetMountFlags()
-		
-    //glog.Infof("Uhu: %+v", v.Mount["mount_flags"]);
+
+		//glog.Infof("Uhu: %+v", v.Mount["mount_flags"]);
 		// if err = v.Mount.XXX_Unmarshal(b); err != nil {
 		// if err = json.Unmarshal([v.Mount.MountFlags, &mountOpt); err != nil {
 		// 	glog.Infof("ERROR");
@@ -117,7 +118,7 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	}
 
 	//glog.V(5).Infof("YO: %+v", b);
-	glog.V(5).Infof("YO: %+v", mountOpt);
+	glog.V(5).Infof("YO: %+v", mountOpt)
 
 	// if v, ok := req.VolumeContext["mount"]; ok {
 	// 	if err = json.Unmarshal([]byte(v), &mountOpt); err != nil {
@@ -130,7 +131,6 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 	// 	goto clean
 	// }
 
-
 	if _, err = d.remoteCreate(req.VolumeId, req.VolumeContext); err != nil {
 		goto clean
 	}
@@ -139,7 +139,6 @@ clean:
 	glog.V(5).Infof("publish volume: %+v", err)
 	return &csi.NodePublishVolumeResponse{}, err
 }
-
 
 func (d *driver) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
 	_, err := d.remoteUmount(req.TargetPath)
