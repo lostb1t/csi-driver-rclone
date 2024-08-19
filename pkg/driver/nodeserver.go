@@ -83,7 +83,7 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		}
 	}
 
-	glog.Infof("YO: %+v", mountOpt);
+	glog.Infof("YO: %+v", b);
 
 	// if v, ok := req.VolumeContext["mount"]; ok {
 	// 	if err = json.Unmarshal([]byte(v), &mountOpt); err != nil {
