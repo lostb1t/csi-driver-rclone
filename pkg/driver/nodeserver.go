@@ -75,15 +75,15 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 			goto clean
 		}
 	}
-
-	
+	glog.V(5).Infof("yes");
 	if v, ok := req.VolumeCapability.GetAccessType().(*csi.VolumeCapability_Mount); ok {
 		if err = v.Mount.XXX_Unmarshal(b); err != nil {
+			glog.V(5).Infof("ERROR");
 			goto clean
 		}
 	}
 
-	glog.V(5).Infof("noun optionst: %+v", mountOpt);
+	glog.V(5).Infof("YO: %+v", mountOpt);
 
 	// if v, ok := req.VolumeContext["mount"]; ok {
 	// 	if err = json.Unmarshal([]byte(v), &mountOpt); err != nil {
