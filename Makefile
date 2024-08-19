@@ -14,3 +14,6 @@ cmd_%:
 
 docker-release:
 	docker buildx build . --platform linux/arm64,linux/amd64 -f docker/Dockerfile -t ghcr.io/lostb1t/csi-driver-rclone --push
+
+build:
+	go build ./cmd/csi-rclone
