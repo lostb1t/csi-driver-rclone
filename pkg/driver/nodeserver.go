@@ -1,27 +1,3 @@
-/*
-MIT License
-
-Copyright (c) 2023 xhe
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-
 package driver
 
 import (
@@ -79,20 +55,29 @@ func (d *driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolu
 		glog.V(5).Infof("YO: %+v", v.Mount.GetMountFlags())
 		flags := v.Mount.GetMountFlags()
 
-		s := strings.Split(flags[0], "--")
+		s := strings.Split(strings.Trim(flags[0], " "), "--")
 		for _, f := range s {
+			if f == "" {
+				continue
+			}
+			//glog.V(5).Infof("f %+v", f)
 			f = strings.Trim(f, " ") 
+			//glog.V(5).Infof("f %+v", f)
 			k := strings.Split(f, " ")
+			//glog.V(5).Infof("k %+v", k)
 			b := strings.Split(k[0], "-")
+			//glog.V(5).Infof("b %+v", b)
 			name := ""
 			for _, x := range b {
 				name += strings.Title(x)
 			}
-
+			//glog.V(5).Infof("name %+v", name)
+			
 			if len(k) == 1 {
 				mountOpt[name] = true
 			} else {
-				mountOpt[name] = f[1]
+				//glog.V(5).Infof("value %+v", k[1])
+				mountOpt[name] = k[1]
 			}
 			//--allow-non-empty --allow-other --vfs-cache-mode full --dir-cache-time 10s
 		}

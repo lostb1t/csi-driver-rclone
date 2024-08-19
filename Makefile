@@ -17,3 +17,6 @@ docker-release:
 
 build:
 	go build ./cmd/csi-rclone
+
+run:
+	go run ./cmd/csi-rclone/ -v 5 --nodeid=1 --endpoint=tcp://:2000 -logtostderr=true
