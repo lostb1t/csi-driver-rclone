@@ -29,7 +29,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xhebox/csi-driver-rclone/pkg/driver"
+	"github.com/lostb1t/csi-driver-rclone/pkg/driver"
 )
 
 func main() {
