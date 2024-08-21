@@ -1,4 +1,4 @@
-module github.com/xhebox/csi-driver-rclone
+module github.com/lostb1t/csi-driver-rclone
 
 go 1.19
 
